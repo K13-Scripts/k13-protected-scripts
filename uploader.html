@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>K13 Script Uploader</title>
+  <style>
+    body { background: #0b0b0b; color: white; font-family: Arial; padding: 20px; }
+    input, button { padding: 10px; margin-top: 10px; width: 100%; }
+    .box { background: #151515; padding: 20px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>K13 Protected Script Uploader</h1>
+  <div class="box">
+    <input type="text" id="token" placeholder="API Token">
+    <input type="file" id="file">
+    <button onclick="upload()">Upload Script</button>
+    <p id="result"></p>
+  </div>
+
+<script>
+function upload() {
+  const file = document.getElementById("file").files[0];
+  const token = document.getElementById("token").value;
+
+  const formData = new FormData();
+  formData.append("script", file);
+
+  fetch("/upload", {
+    method: "POST",
+    headers: { "Authorization": token },
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("result").innerHTML = `
+        <b>Raw Link:</b><br>
+        <code>${data.raw_url}?token=${token}</code>
+      `;
+    })
+    .catch(err => alert("Upload failed"));
+}
+</script>
+</body>
+</html>
